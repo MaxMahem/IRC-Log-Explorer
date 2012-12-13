@@ -1,0 +1,29 @@
+@CHARSET "ISO-8859-1";   
+ 
+@import "common.css";
+	  
+table.files {
+    width: 100%;
+    margin: .5em 0;
+    padding: 0;   
+}
+
+table.sortable th {
+    cursor: pointer;
+}
+  
+table.files tr {
+    padding: 0 1em;
+}
+
+td.date {
+    text-align: center;
+}
+
+td.size, th.size {
+    text-align: right;
+}
+	
+tfoot {
+    font-weight: bold;
+}

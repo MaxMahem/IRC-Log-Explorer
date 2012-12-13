@@ -1,0 +1,48 @@
+@CHARSET "ISO-8859-1";   
+ 
+@import "common.css";
+
+ul {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+li.file {
+    font-weight: bold;
+}
+
+ol.hits {
+    padding-left: 1.5em;
+}
+
+li.hit {
+    font-weight: normal;
+    margin-left: 1em;
+}
+
+ol.experts {
+    padding-left: 3em;
+}
+
+div.exerpt {
+    max-height: 10em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid black;
+    margin-right: 1em;
+    padding-left: 1em;
+}
+
+.exerpt pre {
+    display: inline;
+    white-space: pre-wrap;
+}
+
+div.results {
+    margin: 1em;
+    border: 1px solid #6bb973;
+}
+
+.selected {
+    font-weight: bold;
+}

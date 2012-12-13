@@ -1,0 +1,51 @@
+body {   
+    background-color: black;   
+    font-family: "Arial";   
+    font-size: larger;
+    padding: 1em;
+}
+
+a {	
+    color: #8C1335;
+    text-decoration: none;
+}
+
+div#container {   
+    width: 100%;   
+    margin: 0 auto;   
+    border: 1px solid #139A76;   
+    background-color: #ffffff;
+}
+
+h1 {   
+    background-color: #139A76;   
+    margin: 0px;   
+    padding: .5em;
+
+    font-weight: bold;
+    text-align: center;
+}
+  
+fieldset {   
+    margin:         1em;
+    padding-bottom: 1em;
+    border: 1px solid #6BB973;
+}
+
+legend {
+    margin: 0 1em;
+    padding: 0.1em 1em;
+    border: 1px solid #6BB973;
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+}
+
+input {
+    float: left;
+}
+
+label { 
+    margin: 0px 1em;
+    float: left;
+}
