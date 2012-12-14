@@ -5,6 +5,7 @@
 
 /* get variables */
 $fileName     = filter_input(INPUT_GET, 'file');
+$fileNamePath = 'logs' . DIRECTORY_SEPARATOR . $fileName;
 $startLineNum = filter_input(INPUT_GET, 'start');
 $endLineNum   = filter_input(INPUT_GET, 'end');
 $queryLineNum = filter_input(INPUT_GET, 'query');
@@ -32,8 +33,8 @@ if ($ajax == FALSE) {
     echo "</header>";
 }
    
-if (file_exists($fileName)) {
-    $file = new SplFileObject($fileName, 'r');
+if (file_exists($fileNamePath)) {
+    $file = new SplFileObject($fileNamePath, 'r');
        
     /* check that our queried lines fit within the range */
     if ($startLineNum < 0) { 
@@ -69,7 +70,7 @@ if (file_exists($fileName)) {
         echo "START" . PHP_EOL;
     } else {
         /* link to get more from start */
-        echo "<a href='exerpt.php?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='exerpt?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
     
     echo "<div class='exerpt'>" . PHP_EOL;
@@ -89,7 +90,7 @@ if (file_exists($fileName)) {
         echo "END" . PHP_EOL;
     } else {
         /* link to get more from end */
-        echo "<a href='exerpt.php?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='exerpt?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
 }
 

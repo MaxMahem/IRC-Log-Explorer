@@ -1,9 +1,13 @@
 <?php
-/* get a directory iterator for our current path */
-$currentDirectory  = dirname(__FILE__);
-$directoryIterator = new DirectoryIterator($currentDirectory);
 
-function displayFile(DirectoryIterator $fileInfo) {   
+/* functions for searching */
+include_once($_SERVER['DOCUMENT_ROOT'] . '/irc/includes/search.php');
+
+/* get a directory iterator for our current path */
+$logDirectory  = dirname(__FILE__) . '/logs';
+$directoryIterator = new DirectoryIterator($logDirectory);
+
+function displayFiles(DirectoryIterator $fileInfo) {   
     /* our version of php lacks getExtension, so we use this workaround */
     $fileExtension = pathinfo($fileInfo->getFilename(), PATHINFO_EXTENSION);
                         
@@ -41,26 +45,6 @@ function displayFile(DirectoryIterator $fileInfo) {
     }
 }
 
-function search_form($getData) {
-    $lastSelectedKeyword = $getData['keyword'];
-    $lastSelectedLimit   = $getData['limit'];
-    
-    $defaultSearchValue = (!$lastSelectedKeyword)   ? ''        : str_replace("&amp;","&",htmlentities($lastSelectedKeyword));
-    $defaultCaseValue   = (isset($getData['case'])) ? 'CHECKED' : '';
-    $defaultRegxValue   = (isset($getData['regx'])) ? 'CHECKED' : '';
-    
-    echo "<form action='results.php' method='GET'>";
-    echo "<input type='hidden' value='SEARCH' name='action'>";
-    echo "<input type='text' name='keyword' class='text' size='10'  maxlength='" . MAX_CHARS . "' value='$defaultSearchValue' placeholder='Search Term' required>"; 
-
-    echo "<div class='type'>";
-    echo "<input type='checkbox' name='case' value='true' id='case' $defaultCaseValue><label for='case'>Case Sensative</label>";
-    echo "<input type='checkbox' name='regx' value='true' id='regx' $defaultRegxValue><label for='regx'>Regular Expression</label>";
-    echo "</div>";
-
-    echo "<input type='submit' value='Search' class='button'>";
-    echo "</form>\n";
-}
 ?>
 <!DOCTYPE html>
 
@@ -78,7 +62,7 @@ function search_form($getData) {
 
             <fieldset>
                 <legend>Search</legend>
-                <?php search_form($_GET) ?>
+                <?php searchForm() ?>
             </fieldset>
             <fieldset>  
                 <legend>Logs</legend>  
@@ -91,7 +75,7 @@ function search_form($getData) {
 <?php               
 /* print the file rows */
 foreach ($directoryIterator as $fileInfo) {
-    echo displayFile($fileInfo);
+    echo displayFiles($fileInfo);
 }
 ?>
                 </tbody>

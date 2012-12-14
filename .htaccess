@@ -1,4 +1,12 @@
-# Show Index for log folder
-# TODO: Replace this w/ php script.
+# Document   : .htaccess
+# Created on : Dec 13, 2012
+# Author     : MaxMahem
 
-Options +Indexes
+RewriteEngine On
+
+# Rewrite if we don't match a directory
+RewriteCond %{REQUEST_FILENAME} !-d 
+# Rewrite if the request is a php file
+RewriteCond %{REQUEST_FILENAME}\.php -f 
+# Rewrite to add .php
+RewriteRule ^(.*)$ $1.php
