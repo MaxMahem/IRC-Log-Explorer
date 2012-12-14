@@ -49,7 +49,7 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
         /* set approviate variables */
         $caseRegex = ($case) ? '' : 'i'; /* regex case sensative marker */
         $htmlSafeKeyword = htmlspecialchars($keyword);
-//        $regxSafeKeyword = preg_quote($keyword);      // currently unused
+        $regxSafeKeyword = preg_quote($htmlSafeKeyword);
         
         echo "<h1>Your search result for: '<em>$htmlSafeKeyword</em>'</h1>" . PHP_EOL;
         
@@ -94,7 +94,7 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
                         $totalHitCount++;
 
                         $htmlSafeLine = htmlspecialchars($line);
-                        $styledLine   = preg_replace("/($htmlSafeKeyword)/$caseRegex",'<strong>$1</strong>', $htmlSafeLine);
+                        $styledLine   = preg_replace("/($regxSafeKeyword)/$caseRegex",'<strong>$1</strong>', $htmlSafeLine);
                         
                         $queryData = array(
                             'start' => $lineNum -2,
