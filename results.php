@@ -1,7 +1,7 @@
 <?
 /* functions for searching */
 include_once($_SERVER['DOCUMENT_ROOT'] . '/irc/includes/search.php');
-$searchDirectory = dirname(__FILE__) . '/logs'; // Directory to be searched
+$searchDirectory = $_SERVER['DOCUMENT_ROOT'] . '/irc/logs'; // Directory to be searched
 $searchFileTypes = array("log");                // Type of files to be searched?
 ?>
 <!DOCTYPE html>
@@ -10,9 +10,9 @@ $searchFileTypes = array("log");                // Type of files to be searched?
 <head>  
     <meta charset='UTF-8'>    
     <title>IRC Log Search</title>
-    <link rel="stylesheet" type="text/css" href="search.css" />
+    <link rel="stylesheet" type="text/css" href="/irc/search.css" />
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="results.js"></script>
+    <script src="/irc/results.js"></script>
 </head>
 
 <body>

@@ -4,6 +4,9 @@
 
 RewriteEngine On
 
+# Rewrite search\keyword
+RewriteRule results/(.*) results.php?keyword=$1 [L]
+
 # Rewrite if we don't match a directory
 RewriteCond %{REQUEST_FILENAME} !-d 
 # Rewrite if the request is a php file

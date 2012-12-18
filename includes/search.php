@@ -20,7 +20,7 @@ function searchForm() {
     $defaultCaseValue   = (isset($case))  ? 'CHECKED' : '';
     $defaultRegxValue   = (isset($regx))  ? 'CHECKED' : '';
     
-    echo "<form action='results' method='GET'>";
+    echo "<form action='/irc/search.php' method='POST'>";
     echo "<input type='hidden' value='SEARCH' name='action'>";
     echo "<input type='text' name='keyword' class='text' size='10'  maxlength='" . MAX_CHARS . "' value='$defaultSearchValue' placeholder='Search Term' required>"; 
 
@@ -38,121 +38,120 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
     // global $totalHitCount;
     $totalHitCount = 0;
     
-    $keyword = filter_input(INPUT_GET, 'keyword');
-    $action  = filter_input(INPUT_GET, 'action');
+    $keyword = filter_input(INPUT_GET, 'keyword');  
+    $case    = filter_input(INPUT_GET, 'case');
+    $regx    = filter_input(INPUT_GET, 'regx');
     
-    if($action == "SEARCH") {
-        /* get extra necessary variables */
-        $case = filter_input(INPUT_GET, 'case');
-        $regx = filter_input(INPUT_GET, 'regx');
+    if (empty($keyword)) {
+        die();
+    }
 
-        /* set approviate variables */
-        $caseRegex = ($case) ? '' : 'i'; /* regex case sensative marker */
-        $htmlSafeKeyword = htmlspecialchars($keyword);
-        $regxSafeKeyword = preg_quote($htmlSafeKeyword);
+    /* set approviate variables */
+    $caseRegex = ($case) ? '' : 'i'; /* regex case sensative marker */
+    $htmlSafeKeyword = htmlspecialchars($keyword);
+    $regxSafeKeyword = preg_quote($htmlSafeKeyword);
         
-        echo "<h1>Your search result for: '<em>$htmlSafeKeyword</em>'</h1>" . PHP_EOL;
+    echo "<h1>Your search result for: '<em>$htmlSafeKeyword</em>'</h1>" . PHP_EOL;
         
-        $directory = new DirectoryIterator($searchDirectory);
+    $directory = new DirectoryIterator($searchDirectory);
+        
+    foreach ($directory as $fileInfo) { /* directory parse loop */
+        $fileName     = $fileInfo->getFilename();
+        $fileLink     = 'logs' . DIRECTORY_SEPARATOR . urlencode($fileName);
             
-        foreach ($directory as $fileInfo) { /* directory parse loop */
-            $fileName     = $fileInfo->getFilename();
-            $fileLink     = 'logs' . DIRECTORY_SEPARATOR . urlencode($fileName);
+        /* if we have hit the limit of hits, stop */
+        if ($totalHitCount >= HIT_LIMIT) { break; }
+          
+        /* if our file is a directory, we recurse - disabled for now */
+        /* if ($fileInfo->isDir() && !$fileInfo->isDot()) {
+            $searchDirectories = array("$searchDirectory/$fileName();)");
+            searchDirectory($searchDirectories, $searchFileTypes);
+        } */
             
-            /* if we have hit the limit of hits, stop */
-            if ($totalHitCount >= HIT_LIMIT) { break; }
-                
-            /* if our file is a directory, we recurse - disabled for now */
-            /* if ($fileInfo->isDir() && !$fileInfo->isDot()) {
-                $searchDirectories = array("$searchDirectory/$fileName();)");
-                searchDirectory($searchDirectories, $searchFileTypes);
-            } */
-                
-            /* get the file Extension */
-            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
-                
-            /* if our file is of the proper type, we search in it */
-            if (in_array($fileExtension, $searchFileTypes)) { /* search conditional */                   
-                /* open our file */
-                $file = $fileInfo->openFile('r');
-                
-                $fileHitCount = 0;
-                
-                /* parse through the whole file line by line */
-                foreach ($file as $lineNum => $line) { /* file parse loop */    
-                    /* searches our file for the keywords, method as appropriate */
-                    if ($regx) {
-                        $do = preg_match("/$keyword/$caseRegex", $line);
-                    } else {
-                        if($case) { $do = strstr($line,  $keyword); }
-                        else      { $do = stristr($line, $keyword); }
-                    }
-                    
-                    /* if we got a hit on the line */
-                    if ($do) {
-                        $fileHitCount++;
-                        $totalHitCount++;
+        /* get the file Extension */
+        $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+            
+        /* if our file is of the proper type, we search in it */
+        if (in_array($fileExtension, $searchFileTypes)) { /* search conditional */                   
+            /* open our file */
+            $file = $fileInfo->openFile('r');
+            
+            $fileHitCount = 0;
 
-                        $htmlSafeLine = htmlspecialchars($line);
-                        $styledLine   = preg_replace("/($regxSafeKeyword)/$caseRegex",'<strong>$1</strong>', $htmlSafeLine);
-                        
-                        $queryData = array(
-                            'start' => $lineNum -2,
-                            'end'   => $lineNum +2,
-                            'query' => $lineNum,
-                            'file'  => $fileName
-                        );
-                        
-                        $query = http_build_query($queryData, '', '&amp;');
-                            
-                        $hit  = "<li class='hit' data-line='$lineNum'>";
-                        $hit .= "<a href='exerpt?$query' class='getExerptLink'>$lineNum:</a> $styledLine";
-                        $hit .= "</li>" . PHP_EOL;
-                        
-                        $hits[] = $hit;
-                            
-                        if ($totalHitCount >= HIT_LIMIT) { break; }
-                    }
-                } /* close file parse loop */
-                    
-                /* if we got a hit on the file we just searched */
-                if ($fileHitCount > 0) {
-                    $outputLine  = "<li class='file' data-filename='$fileLink'>" . PHP_EOL; /* open file li */
-                    $outputLine .= "$fileHitCount Hits: <a href='$fileLink' class='file'>$fileName</a>" . PHP_EOL;
-                    
-                    $outputLine .= "<ol class='hits'>";                                     /* open  hits ol */
-                    foreach ($hits as $hit) {
-                        $outputLine .= $hit;                                                /* list  hit  li */
-                    }
-                    $outputLine .= "</ol>" . PHP_EOL;                                       /* close hits ol */
-                    
-                    $outputLine .= "</li>" . PHP_EOL;                                       /* close file li */
-                    
-                    /* append to our output */
-                    $outputLines[] = $outputLine;
+            /* parse through the whole file line by line */
+            foreach ($file as $lineNum => $line) { /* file parse loop */    
+                /* searches our file for the keywords, method as appropriate */
+                if ($regx) {
+                    $do = preg_match("/$keyword/$caseRegex", $line);
+                } else {
+                    if($case) { $do = strstr($line,  $keyword); }
+                    else      { $do = stristr($line, $keyword); }
                 }
                     
-                unset($hits);
-            } /* close search conditional */
-        } /* close directory parse loop */
-    
-        /* output data */
-        if (!empty($outputLines)) {
-            echo "<ul class='files'>" . PHP_EOL; /* open file ul */
-            foreach ($outputLines as $outputLine) {
-                echo $outputLine;
+                /* if we got a hit on the line */
+                if ($do) {
+                    $fileHitCount++;
+                    $totalHitCount++;
+
+                    $htmlSafeLine = htmlspecialchars($line);
+                    $styledLine   = preg_replace("/($regxSafeKeyword)/$caseRegex",'<strong>$1</strong>', $htmlSafeLine);
+                        
+                    $queryData = array(
+                        'start' => $lineNum -2,
+                        'end'   => $lineNum +2,
+                        'query' => $lineNum,
+                        'file'  => $fileName
+                    );
+                        
+                    $query = http_build_query($queryData, '', '&amp;');
+                        
+                    $hit  = "<li class='hit' data-line='$lineNum'>";
+                    $hit .= "<a href='/irc/exerpt?$query' class='getExerptLink'>$lineNum:</a> $styledLine";
+                    $hit .= "</li>" . PHP_EOL;
+                        
+                    $hits[] = $hit;
+                            
+                    if ($totalHitCount >= HIT_LIMIT) { break; }
+                }
+            } /* close file parse loop */
+                
+            /* if we got a hit on the file we just searched */
+            if ($fileHitCount > 0) {
+                $outputLine  = "<li class='file' data-filename='$fileLink'>" . PHP_EOL; /* open file li */
+                $outputLine .= "$fileHitCount Hits: <a href='/irc/$fileLink' class='file'>$fileName</a>" . PHP_EOL;
+           
+                $outputLine .= "<ol class='hits'>";                                     /* open  hits ol */
+                foreach ($hits as $hit) {
+                    $outputLine .= $hit;                                                /* list  hit  li */
+                }
+                $outputLine .= "</ol>" . PHP_EOL;                                       /* close hits ol */
+                    
+                $outputLine .= "</li>" . PHP_EOL;                                       /* close file li */
+                    
+                /* append to our output */
+                $outputLines[] = $outputLine;
             }
-            echo "</ul>";
+                    
+            unset($hits);
+        } /* close search conditional */
+    } /* close directory parse loop */
+    
+    /* output data */
+    if (!empty($outputLines)) {
+        echo "<ul class='files'>" . PHP_EOL; /* open file ul */
+        foreach ($outputLines as $outputLine) {
+            echo $outputLine;
         }
-        
-        /* hit counter */
-        echo "<h1>";
-        if ($totalHitCount < 1) {
-            echo "Sorry, no hits.";
-        } else {
-            echo "Total Hits: $totalHitCount";
-            if ($totalHitCount >= HIT_LIMIT) { echo "<br>Hit Limit Reached."; }
-        }
-        echo "</h1>";
+        echo "</ul>";
     }
+        
+    /* hit counter */
+    echo "<h1>";
+    if ($totalHitCount < 1) {
+        echo "Sorry, no hits.";
+    } else {
+        echo "Total Hits: $totalHitCount";
+        if ($totalHitCount >= HIT_LIMIT) { echo "<br>Hit Limit Reached."; }
+    }
+    echo "</h1>";
 }

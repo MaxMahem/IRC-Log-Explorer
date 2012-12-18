@@ -23,7 +23,7 @@ if ($ajax == FALSE) {
     echo "<head>";
         echo "<meta charset='UTF-8'>";
         echo "<title>IRC Log Exerpt - $fileName</title>";
-        echo "<link rel='stylesheet' type='text/css' href='search.css' />";
+        echo "<link rel='stylesheet' type='text/css' href='/irc/search.css' />";
     echo "</head>";
 
     echo "<body>";
@@ -70,7 +70,7 @@ if (file_exists($fileNamePath)) {
         echo "START" . PHP_EOL;
     } else {
         /* link to get more from start */
-        echo "<a href='exerpt?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='/irc/exerpt?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
     
     echo "<div class='exerpt'>" . PHP_EOL;
@@ -90,7 +90,7 @@ if (file_exists($fileNamePath)) {
         echo "END" . PHP_EOL;
     } else {
         /* link to get more from end */
-        echo "<a href='exerpt?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='/irc/exerpt?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
 }
 
