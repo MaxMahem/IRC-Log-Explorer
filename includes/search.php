@@ -37,6 +37,7 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
     /* this is global so that recursion can work correctly, since that is turned off, this is to */
     // global $totalHitCount;
     $totalHitCount = 0;
+    $startTime = microtime(TRUE);
     
     $keyword = filter_input(INPUT_GET, 'keyword');  
     $case    = filter_input(INPUT_GET, 'case');
@@ -136,6 +137,9 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
         } /* close search conditional */
     } /* close directory parse loop */
     
+    $endTime = microtime(TRUE);
+    $time = round($endTime - $startTime, 2);
+    
     /* output data */
     if (!empty($outputLines)) {
         echo "<ul class='files'>" . PHP_EOL; /* open file ul */
@@ -153,5 +157,6 @@ function searchDirectory($searchDirectory, $searchFileTypes) {
         echo "Total Hits: $totalHitCount";
         if ($totalHitCount >= HIT_LIMIT) { echo "<br>Hit Limit Reached."; }
     }
+    echo "<br>In $time seconds.";
     echo "</h1>";
 }

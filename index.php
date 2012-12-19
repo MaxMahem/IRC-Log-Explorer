@@ -7,7 +7,10 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/irc/includes/search.php');
 $logDirectory  = dirname(__FILE__) . '/logs';
 $directoryIterator = new DirectoryIterator($logDirectory);
 
-function displayFiles(DirectoryIterator $fileInfo) {   
+function displayFiles(DirectoryIterator $fileInfo) {
+    global $totalSize;
+    global $totalCount;
+    
     /* our version of php lacks getExtension, so we use this workaround */
     $fileExtension = pathinfo($fileInfo->getFilename(), PATHINFO_EXTENSION);
                         
@@ -25,7 +28,7 @@ function displayFiles(DirectoryIterator $fileInfo) {
         $fileLink = urlencode($fileInfo->getFilename());
         $fileSize = round($fileInfo->getSize()/1024, 2) . 'KB';
         
-        $totalSize += $fileInfo->getSize();
+        $totalSize  += $fileInfo->getSize();
         $totalCount += 1;
 
         $row  = '<tr>';
@@ -58,7 +61,7 @@ function displayFiles(DirectoryIterator $fileInfo) {
 
     <body>  
         <div id="container">  
-            <head><h1>MaxMahem - IRC Log Files</h1></head>
+            <header><h1>MaxMahem - IRC Log Files</h1></header>
 
             <fieldset>
                 <legend>Search</legend>
