@@ -1,10 +1,10 @@
 <?php
 
 /* functions for searching */
-include_once($_SERVER['DOCUMENT_ROOT'] . '/irc/includes/search.php');
+require_once('includes/search.php');
 
 /* get a directory iterator for our current path */
-$logDirectory  = dirname(__FILE__) . '/logs';
+$logDirectory  = dirname(__FILE__) . '/../';
 $directoryIterator = new DirectoryIterator($logDirectory);
 
 function displayFiles(DirectoryIterator $fileInfo) {
@@ -38,7 +38,7 @@ function displayFiles(DirectoryIterator $fileInfo) {
         } else {
             $row .= "<td class='channel'>$channel</td>";
         }
-        $row .= "<td class='name'><a href='$fileLink'>$fileName</a></td>";
+        $row .= "<td class='name'><a href='../$fileLink'>$fileName</a></td>";
         $row .= "<td class='date'>$fileDate</td>";
         $row .= "<td class='size'>$fileSize</td>";
 

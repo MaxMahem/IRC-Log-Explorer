@@ -45,6 +45,10 @@ input {
     float: left;
 }
 
+input.text {
+    width: 100%;
+}
+
 label { 
     margin: 0px 1em;
     float: left;

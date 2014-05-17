@@ -29,7 +29,7 @@ ol.experts {
 }
 
 div.exerpt {
-    max-height: 10em;
+/*    max-height: 10em; Decided to disable this */
     overflow-y: scroll;
     overflow-x: hidden;
     border: 1px solid black;

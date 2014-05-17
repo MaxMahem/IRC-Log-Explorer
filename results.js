@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function() {
-    $("a.getExerptLink").live('click', function(event) {
+    $(document).on('click', 'a.getExerptLink', function(event) {
         var href  = $(this).attr('href');       
         var $parent = $(this).parent();
         
@@ -14,6 +14,7 @@ $(document).ready(function() {
             $parent.append(data);
         });
         event.preventDefault();
+
     });
 });
 

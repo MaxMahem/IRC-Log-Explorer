@@ -10,7 +10,7 @@ if (!empty($regx))    { $urlGets['regx'] = 'regx=true'; }
 
 $urlGet = implode('&', $urlGets);
 
-$urlRedirect = $_SERVER['HTTP_HOST'] . "/irc/results/$urlGet";
+$urlRedirect = $_SERVER['HTTP_HOST'] . "../$urlGet";
 
 header("Location: http://$urlRedirect");
 // echo $urlRedirect;

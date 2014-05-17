@@ -1,11 +1,13 @@
 <?php
 /* exerpt.php
- * does some magic and returns an exerpt of the selected file 
+ * does some magic and returns an exerpt of the selected file
  */
+
+require_once('includes/search.php');
 
 /* get variables */
 $fileName     = filter_input(INPUT_GET, 'file');
-$fileNamePath = 'logs' . DIRECTORY_SEPARATOR . $fileName;
+$fileNamePath = '../' . DIRECTORY_SEPARATOR . $fileName;
 $startLineNum = filter_input(INPUT_GET, 'start');
 $endLineNum   = filter_input(INPUT_GET, 'end');
 $queryLineNum = filter_input(INPUT_GET, 'query');
@@ -23,7 +25,7 @@ if ($ajax == FALSE) {
     echo "<head>";
         echo "<meta charset='UTF-8'>";
         echo "<title>IRC Log Exerpt - $fileName</title>";
-        echo "<link rel='stylesheet' type='text/css' href='/irc/search.css' />";
+        echo "<link rel='stylesheet' type='text/css' href='index.css' />";
     echo "</head>";
 
     echo "<body>";
@@ -70,17 +72,20 @@ if (file_exists($fileNamePath)) {
         echo "START" . PHP_EOL;
     } else {
         /* link to get more from start */
-        echo "<a href='/irc/exerpt?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='exerpt?$prevQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
+
+    $numberOfLines = $endLineNum - $startLineNum;
     
-    echo "<div class='exerpt'>" . PHP_EOL;
+    echo "<div class='exerpt' data-lines='$numberOfLines'>" . PHP_EOL;
     echo "<ol class='exerpt' start='$startLineNum'>" . PHP_EOL;
     foreach ($lines as $lineNum => $line) {
         /* if our line number is the select line number we add the 'selected' class, to bold it. */
         $selected = ($lineNum == $queryLineNum) ? "class='selected'" : '';
-    
+
         $htmlSafeLine = htmlspecialchars($line);
-        echo "<li $selected data-line='$lineNum'><pre>$htmlSafeLine</pre></li>" . PHP_EOL;
+        $linkedLine   = autoLink($htmlSafeLine);
+        echo "<li $selected data-line='$lineNum'><pre>$linkedLine</pre></li>" . PHP_EOL;
     }
     echo "</ol>" . PHP_EOL;
     echo "</div>" . PHP_EOL;
@@ -90,7 +95,7 @@ if (file_exists($fileNamePath)) {
         echo "END" . PHP_EOL;
     } else {
         /* link to get more from end */
-        echo "<a href='/irc/exerpt?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
+        echo "<a href='exerpt?$nextQuery' class='getExerptLink'>MORE</a>" . PHP_EOL;
     }
 }
 
